@@ -9,5 +9,9 @@ rust-version = "1.80"
 anyhow = "1.0.68"                                # error handling
 bytes = "1.3.0"                                  # helps manage buffers
 clap = { version = "4.5.37", features = ["derive"] }
+crypto = "0.5.1"
 flate2 = "1.0.34"                                # compression
+hex = "0.4.3"
+hex-literal = "0.4.1"
+sha1 = "0.10.6"
 thiserror = "1.0.38"                             # error handling
