@@ -64,7 +64,7 @@ fn cat_file(pretty_print: bool, object_hash: String) -> anyhow::Result<()> {
         "mode must be given without -p, and we don't support pretty print mode"
     );
 
-    let f = std::fs::File::open(format!(
+    let f = fs::File::open(format!(
         ".git/objects/{}/{}",
         &object_hash[..2],
         &object_hash[2..]
@@ -109,7 +109,7 @@ fn cat_file(pretty_print: bool, object_hash: String) -> anyhow::Result<()> {
 }
 
 fn hash_object(write: bool, file_name: String) -> anyhow::Result<()> {
-    let f = std::fs::File::open(file_name).context("open file")?;
+    let f = fs::File::open(file_name).context("open file")?;
     let mut z = ZlibEncoder::new(BufReader::new(f), Compression::default());
     let mut buf = Vec::new();
     z.read_to_end(&mut buf).context("read file")?;
@@ -124,8 +124,9 @@ fn hash_object(write: bool, file_name: String) -> anyhow::Result<()> {
             &file_name_hash[..2],
             &file_name_hash[2..]
         );
-        fs::create_dir_all(format!(".git/objects/{}", &file_name_hash[..2])).context("create dir")?;
-        let mut file = std::fs::File::create(file_location).context("create file")?;
+        fs::create_dir_all(format!(".git/objects/{}", &file_name_hash[..2]))
+            .context("create dir")?;
+        let mut file = fs::File::create(file_location).context("create file")?;
         file.write_all(&buf).context("write file to .git/objects")?;
     }
     Ok(())
