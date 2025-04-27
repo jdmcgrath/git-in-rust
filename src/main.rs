@@ -6,7 +6,6 @@ use std::fs;
 use std::io::prelude::*;
 use std::io::BufReader;
 
-
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Args {
@@ -32,7 +31,7 @@ fn main() -> anyhow::Result<()> {
     eprintln!("Logs from your program will appear here!");
     // Uncomment this block to pass the first stage
     match args.command {
-        Command::Init => Ok(init()),
+        Command::Init => init(),
         Command::CatFile {
             pretty_print,
             object_hash,
@@ -41,12 +40,13 @@ fn main() -> anyhow::Result<()> {
     Ok(())
 }
 
-fn init() {
+fn init() -> anyhow::Result<()> {
     fs::create_dir(".git").unwrap();
     fs::create_dir(".git/objects").unwrap();
     fs::create_dir(".git/refs").unwrap();
     fs::write(".git/HEAD", "ref: refs/heads/main\n").unwrap();
-    println!("Initialized git directory") 
+    println!("Initialized git directory");
+    Ok(())
 }
 
 fn cat_file(pretty_print: bool, object_hash: String) -> anyhow::Result<()> {
@@ -72,9 +72,7 @@ fn cat_file(pretty_print: bool, object_hash: String) -> anyhow::Result<()> {
         .to_str()
         .context(".git/objects file header isn't valid UTF-8")?;
     let Some((kind, size)) = header.split_once(' ') else {
-        anyhow::bail!(
-            ".git/objects file header did not start with a known type: '{header}'"
-        );
+        anyhow::bail!(".git/objects file header did not start with a known type: '{header}'");
     };
     let kind = match kind {
         "blob" => Kind::Blob,
