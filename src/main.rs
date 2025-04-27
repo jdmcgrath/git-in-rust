@@ -124,11 +124,9 @@ fn hash_object(write: bool, file_name: String) -> anyhow::Result<()> {
             &file_name_hash[..2],
             &file_name_hash[2..]
         );
+        fs::create_dir_all(format!(".git/objects/{}", &file_name_hash[..2])).context("create dir")?;
         let mut file = std::fs::File::create(file_location).context("create file")?;
-        file.write_all(&buf)
-            .context("write file")
-            .context("write file to .git/objects")?;
+        file.write_all(&buf).context("write file to .git/objects")?;
     }
-
     Ok(())
 }
